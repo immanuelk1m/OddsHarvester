@@ -51,3 +51,6 @@ python/
 
 # Cursor
 *.cursor
+
+# Data files
+data/*.csv
