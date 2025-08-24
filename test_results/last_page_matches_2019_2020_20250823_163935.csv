@@ -1,0 +1,3 @@
+country,league_id,season,last_page_num,matches_on_last_page,test_duration_sec,status,error_message
+belgium,belgium-jupiler-pro-league,2019-2020,5,47,25.76,SUCCESS,
+switzerland,switzerland-super-league,2019-2020,4,36,25.49,SUCCESS,

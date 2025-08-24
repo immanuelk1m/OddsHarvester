@@ -1,0 +1,28 @@
+[2025-08-23 16:40:35] INFO: ================================================================================
+[2025-08-23 16:40:35] INFO: LAST PAGE COLLECTION TEST - 2019-2020 COMPLETE SEASONS
+[2025-08-23 16:40:35] INFO: Started at: 2025-08-23 16:40:35
+[2025-08-23 16:40:35] INFO: Testing 13 leagues (expecting 3+ pages each)
+[2025-08-23 16:40:35] INFO: ================================================================================
+[2025-08-23 16:40:35] INFO: Starting test: belgium - belgium-jupiler-pro-league - 2019-2020
+[2025-08-23 16:41:02] INFO: SUCCESS: belgium - Page 3 - 57 matches - 26.45s
+[2025-08-23 16:41:02] INFO: Starting test: switzerland - switzerland-super-league - 2019-2020
+[2025-08-23 16:41:28] INFO: SUCCESS: switzerland - Page 4 - 36 matches - 25.96s
+[2025-08-23 16:41:28] INFO: Starting test: england - england-premier-league - 2019-2020
+[2025-08-23 16:41:57] INFO: SUCCESS: england - Page 8 - 35 matches - 29.26s
+[2025-08-23 16:41:57] INFO: Starting test: italy - italy-serie-a - 2019-2020
+[2025-08-23 16:42:23] INFO: SUCCESS: italy - Page 8 - 35 matches - 26.17s
+[2025-08-23 16:42:23] INFO: Starting test: spain - spain-laliga - 2019-2020
+[2025-08-23 16:42:48] INFO: SUCCESS: spain - Page 8 - 35 matches - 24.63s
+[2025-08-23 16:42:48] INFO: Starting test: sweden - sweden-allsvenskan - 2019
+[2025-08-23 16:43:14] INFO: SUCCESS: sweden - Page 5 - 46 matches - 25.58s
+[2025-08-23 16:43:14] INFO: Starting test: france - france-ligue-1 - 2019-2020
+[2025-08-23 16:43:37] INFO: SUCCESS: france - Page 8 - 25 matches - 23.68s
+[2025-08-23 16:43:37] INFO: Starting test: portugal - portugal-liga-portugal - 2019-2020
+[2025-08-23 16:44:02] INFO: SUCCESS: portugal - Page 7 - 11 matches - 24.50s
+[2025-08-23 16:44:02] INFO: Starting test: norway - norway-eliteserien - 2019
+[2025-08-23 16:44:29] INFO: SUCCESS: norway - Page 5 - 46 matches - 27.48s
+[2025-08-23 16:44:29] INFO: Starting test: denmark - denmark-superliga - 2019-2020
+[2025-08-23 16:44:55] INFO: SUCCESS: denmark - Page 5 - 48 matches - 25.63s
+[2025-08-23 16:44:55] INFO: Starting test: germany - germany-bundesliga - 2019-2020
+[2025-08-23 16:45:23] INFO: SUCCESS: germany - Page 3 - 10 matches - 27.95s
+[2025-08-23 16:45:23] INFO: Starting test: netherlands - netherlands-eredivisie - 2019-2020

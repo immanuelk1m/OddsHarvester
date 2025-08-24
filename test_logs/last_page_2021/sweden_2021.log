@@ -1,0 +1,25 @@
+2025-08-23 16:02:18 - INFO - Starting test for sweden - sweden-allsvenskan - 2021
+2025-08-23 16:02:18 - DEBUG - Initializing scraper components...
+2025-08-23 16:02:18 - DEBUG - Starting Playwright browser...
+2025-08-23 16:02:18 - INFO - Base URL: https://www.oddsportal.com/football/sweden/allsvenskan-2021/results/
+2025-08-23 16:02:18 - DEBUG - Navigating to results page...
+2025-08-23 16:02:22 - INFO - Page loaded in 3.65s
+2025-08-23 16:02:22 - DEBUG - Analyzing pagination...
+2025-08-23 16:02:22 - INFO - Found 5 total pages, last page is 5
+2025-08-23 16:02:22 - DEBUG - Pagination analysis took 0.06s
+2025-08-23 16:02:22 - INFO - Navigating to last page: https://www.oddsportal.com/football/sweden/allsvenskan-2021/results/#/page/5
+2025-08-23 16:02:25 - DEBUG - Last page loaded in 3.32s
+2025-08-23 16:02:25 - DEBUG - Scrolling to load all content...
+2025-08-23 16:02:33 - DEBUG - Scrolling completed in 8.15s
+2025-08-23 16:02:33 - INFO - Extracting match URLs from last page...
+2025-08-23 16:02:34 - INFO - Found 42 matches on last page
+2025-08-23 16:02:34 - DEBUG - Extraction took 0.07s
+2025-08-23 16:02:34 - INFO - Sample match URLs:
+2025-08-23 16:02:34 - INFO -   1. https://www.oddsportal.com/football/sweden/allsvenskan-2021/sirius-kalmar-nTWoqX1n/
+2025-08-23 16:02:34 - INFO -   2. https://www.oddsportal.com/football/sweden/allsvenskan-2021/halmstad-ifk-goteborg-WGdxPTGU/
+2025-08-23 16:02:34 - INFO -   3. https://www.oddsportal.com/football/sweden/allsvenskan-2021/ifk-goteborg-hacken-vsMFxmoU/
+2025-08-23 16:02:34 - INFO -   ... and 39 more matches
+2025-08-23 16:02:34 - INFO - ✅ Test completed successfully in 15.63s
+2025-08-23 16:02:34 - INFO - Summary: Last page=5, Matches=42
+2025-08-23 16:02:34 - DEBUG - Cleaning up Playwright resources...
+2025-08-23 16:02:34 - INFO - ============================================================

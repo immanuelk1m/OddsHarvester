@@ -1,0 +1,25 @@
+2025-08-23 16:44:29 - INFO - Starting test for denmark - denmark-superliga - 2019-2020
+2025-08-23 16:44:29 - DEBUG - Initializing scraper components...
+2025-08-23 16:44:29 - DEBUG - Starting Playwright browser...
+2025-08-23 16:44:30 - INFO - Base URL: https://www.oddsportal.com/football/denmark/superliga-2019-2020/results/
+2025-08-23 16:44:30 - DEBUG - Navigating to results page...
+2025-08-23 16:44:35 - INFO - Page loaded in 5.45s
+2025-08-23 16:44:35 - DEBUG - Analyzing pagination...
+2025-08-23 16:44:38 - INFO - Found 5 total pages, last page is 5
+2025-08-23 16:44:38 - DEBUG - Pagination analysis took 3.09s
+2025-08-23 16:44:38 - INFO - Navigating to last page: https://www.oddsportal.com/football/denmark/superliga-2019-2020/results/#/page/5
+2025-08-23 16:44:44 - DEBUG - Last page loaded in 5.40s
+2025-08-23 16:44:44 - DEBUG - Scrolling to load all content...
+2025-08-23 16:44:52 - DEBUG - Scrolling completed in 8.18s
+2025-08-23 16:44:52 - INFO - Extracting match URLs from last page...
+2025-08-23 16:44:55 - INFO - Found 48 matches on last page
+2025-08-23 16:44:55 - DEBUG - Extraction took 3.10s
+2025-08-23 16:44:55 - INFO - Sample match URLs:
+2025-08-23 16:44:55 - INFO -   1. https://www.oddsportal.com/football/denmark/superliga-2019-2020/odense-lyngby-25nWyAtr/
+2025-08-23 16:44:55 - INFO -   2. https://www.oddsportal.com/football/denmark/superliga-2019-2020/hobro-aarhus-dSP4Lld1/
+2025-08-23 16:44:55 - INFO -   3. https://www.oddsportal.com/football/denmark/superliga-2019-2020/lyngby-aarhus-d8TQqPvJ/
+2025-08-23 16:44:55 - INFO -   ... and 45 more matches
+2025-08-23 16:44:55 - INFO - ✅ Test completed successfully in 25.63s
+2025-08-23 16:44:55 - INFO - Summary: Last page=5, Matches=48
+2025-08-23 16:44:55 - DEBUG - Cleaning up Playwright resources...
+2025-08-23 16:44:55 - INFO - ============================================================

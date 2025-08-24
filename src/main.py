@@ -21,12 +21,14 @@ def main():
             run_scraper(
                 command=args["command"],
                 match_links=args["match_links"],
+                match_links_csv=args["match_links_csv"],
                 sport=args["sport"],
                 date=args["date"],
                 leagues=args["leagues"],
                 season=args["season"],
                 markets=args["markets"],
                 max_pages=args["max_pages"],
+                max_matches=args["max_matches"],
                 proxies=args["proxies"],
                 browser_user_agent=args["browser_user_agent"],
                 browser_locale_timezone=args["browser_locale_timezone"],
@@ -35,6 +37,7 @@ def main():
                 scrape_odds_history=args["scrape_odds_history"],
                 headless=args["headless"],
                 preview_submarkets_only=args["preview_submarkets_only"],
+                concurrency_tasks=args["concurrency_tasks"],
             )
         )
 

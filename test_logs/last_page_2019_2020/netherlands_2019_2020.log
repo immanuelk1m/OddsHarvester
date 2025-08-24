@@ -1,0 +1,25 @@
+2025-08-23 18:56:49 - INFO - Starting test for netherlands - netherlands-eredivisie - 2019-2020
+2025-08-23 18:56:49 - DEBUG - Initializing scraper components...
+2025-08-23 18:56:49 - DEBUG - Starting Playwright browser...
+2025-08-23 18:56:50 - INFO - Base URL: https://www.oddsportal.com/football/netherlands/eredivisie-2019-2020/results/
+2025-08-23 18:56:50 - DEBUG - Navigating to results page...
+2025-08-23 18:56:57 - INFO - Page loaded in 7.56s
+2025-08-23 18:56:57 - DEBUG - Analyzing pagination...
+2025-08-23 18:57:00 - INFO - Found 6 total pages, last page is 6
+2025-08-23 18:57:00 - DEBUG - Pagination analysis took 3.13s
+2025-08-23 18:57:00 - INFO - Navigating to last page: https://www.oddsportal.com/football/netherlands/eredivisie-2019-2020/results/#/page/6
+2025-08-23 18:57:06 - DEBUG - Last page loaded in 5.29s
+2025-08-23 18:57:06 - DEBUG - Scrolling to load all content...
+2025-08-23 18:57:12 - DEBUG - Scrolling completed in 6.12s
+2025-08-23 18:57:12 - INFO - Extracting match URLs from last page...
+2025-08-23 18:57:15 - INFO - Found 34 matches on last page
+2025-08-23 18:57:15 - DEBUG - Extraction took 3.09s
+2025-08-23 18:57:15 - INFO - Sample match URLs:
+2025-08-23 18:57:15 - INFO -   1. https://www.oddsportal.com/football/netherlands/eredivisie-2019-2020/den-haag-sparta-rotterdam-bwovsbO3/
+2025-08-23 18:57:15 - INFO -   2. https://www.oddsportal.com/football/netherlands/eredivisie-2019-2020/heracles-heerenveen-pG0uQ5mC/
+2025-08-23 18:57:15 - INFO -   3. https://www.oddsportal.com/football/netherlands/eredivisie-2019-2020/twente-waalwijk-UuvMYZVq/
+2025-08-23 18:57:15 - INFO -   ... and 31 more matches
+2025-08-23 18:57:15 - INFO - ✅ Test completed successfully in 25.84s
+2025-08-23 18:57:15 - INFO - Summary: Last page=6, Matches=34
+2025-08-23 18:57:15 - DEBUG - Cleaning up Playwright resources...
+2025-08-23 18:57:15 - INFO - ============================================================

@@ -1,0 +1,134 @@
+[
+  {
+    "country": "germany",
+    "league_id": "bundesliga",
+    "league_name": "Bundesliga",
+    "season": "2019-2020",
+    "status": "success",
+    "match_count": 258,
+    "pages_found": 7,
+    "error": null,
+    "timestamp": "2025-08-24T12:36:17.051035"
+  },
+  {
+    "country": "germany",
+    "league_id": "bundesliga",
+    "league_name": "Bundesliga",
+    "season": "2022-2023",
+    "status": "success",
+    "match_count": 306,
+    "pages_found": 7,
+    "error": null,
+    "timestamp": "2025-08-24T12:39:23.929181"
+  },
+  {
+    "country": "germany",
+    "league_id": "bundesliga",
+    "league_name": "Bundesliga",
+    "season": "2023-2024",
+    "status": "success",
+    "match_count": 306,
+    "pages_found": 7,
+    "error": null,
+    "timestamp": "2025-08-24T12:43:14.423144"
+  },
+  {
+    "country": "netherlands",
+    "league_id": "eredivisie",
+    "league_name": "Eredivisie",
+    "season": "2022-2023",
+    "status": "success",
+    "match_count": 312,
+    "pages_found": 7,
+    "error": null,
+    "timestamp": "2025-08-24T12:46:11.108137"
+  },
+  {
+    "country": "netherlands",
+    "league_id": "eredivisie",
+    "league_name": "Eredivisie",
+    "season": "2023-2024",
+    "status": "success",
+    "match_count": 309,
+    "pages_found": 7,
+    "error": null,
+    "timestamp": "2025-08-24T12:49:04.351484"
+  },
+  {
+    "country": "portugal",
+    "league_id": "liga-portugal",
+    "league_name": "Liga Portugal",
+    "season": "2019-2020",
+    "status": "no_data",
+    "match_count": 0,
+    "pages_found": 1,
+    "error": null,
+    "timestamp": "2025-08-24T12:51:57.439610"
+  },
+  {
+    "country": "portugal",
+    "league_id": "liga-portugal",
+    "league_name": "Liga Portugal",
+    "season": "2022-2023",
+    "status": "success",
+    "match_count": 308,
+    "pages_found": 7,
+    "error": null,
+    "timestamp": "2025-08-24T12:53:18.864833"
+  },
+  {
+    "country": "scotland",
+    "league_id": "premiership",
+    "league_name": "Premiership",
+    "season": "2022-2023",
+    "status": "success",
+    "match_count": 228,
+    "pages_found": 5,
+    "error": null,
+    "timestamp": "2025-08-24T12:56:10.768143"
+  },
+  {
+    "country": "scotland",
+    "league_id": "premiership",
+    "league_name": "Premiership",
+    "season": "2023-2024",
+    "status": "success",
+    "match_count": 228,
+    "pages_found": 5,
+    "error": null,
+    "timestamp": "2025-08-24T12:58:23.629594"
+  },
+  {
+    "country": "switzerland",
+    "league_id": "super-league",
+    "league_name": "Super League",
+    "season": "2019-2020",
+    "status": "success",
+    "match_count": 179,
+    "pages_found": 4,
+    "error": null,
+    "timestamp": "2025-08-24T13:00:37.096318"
+  },
+  {
+    "country": "switzerland",
+    "league_id": "super-league",
+    "league_name": "Super League",
+    "season": "2020-2021",
+    "status": "success",
+    "match_count": 180,
+    "pages_found": 4,
+    "error": null,
+    "timestamp": "2025-08-24T13:02:31.696540"
+  },
+  {
+    "country": "switzerland",
+    "league_id": "super-league",
+    "league_name": "Super League",
+    "season": "2022-2023",
+    "status": "success",
+    "match_count": 180,
+    "pages_found": 4,
+    "error": null,
+    "timestamp": "2025-08-24T13:04:28.251895"
+  }
+]

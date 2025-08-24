@@ -27,6 +27,7 @@ class BaseScraper:
         browser_helper: BrowserHelper,
         market_extractor: OddsPortalMarketExtractor,
         preview_submarkets_only: bool = False,
+        concurrency_tasks: int = 3,
     ):
         """
         Args:
@@ -34,9 +35,11 @@ class BaseScraper:
             browser_helper (BrowserHelper): Helper class for browser interactions.
             market_extractor (OddsPortalMarketExtractor): Handles market scraping.
             preview_submarkets_only (bool): If True, only scrape average odds from visible submarkets without loading individual bookmaker details.
+            concurrency_tasks (int): Number of concurrent tasks for scraping (default: 3).
         """
         self.logger = logging.getLogger(self.__class__.__name__)
         self.playwright_manager = playwright_manager
+        self.concurrency_tasks = concurrency_tasks
         self.browser_helper = browser_helper
         self.market_extractor = market_extractor
         self.preview_submarkets_only = preview_submarkets_only
@@ -97,17 +100,108 @@ class BaseScraper:
             List[str]: A list of unique match links found on the page.
         """
         try:
+            # Wait for content to load and scroll to trigger lazy loading
+            await page.wait_for_timeout(3000)  # Increased wait time
+            await page.evaluate("window.scrollTo(0, document.body.scrollHeight)")
+            await page.wait_for_timeout(2000)
+            
+            # Get current page URL to extract league context
+            current_url = page.url
+            league_pattern = None
+            
+            # Extract league identifier from current URL
+            if '/football/' in current_url:
+                url_parts = current_url.split('/football/')[1].split('/')
+                if len(url_parts) >= 2:
+                    # Get country and league from URL (e.g., "switzerland/super-league")
+                    # Remove season suffix if present (e.g., "super-league-2022-2023" -> "super-league")
+                    league_name = url_parts[1]
+                    # Remove season patterns: -YYYY-YYYY or -YYYY
+                    import re
+                    league_name = re.sub(r'-\d{4}(-\d{4})?$', '', league_name)
+                    league_pattern = f"{url_parts[0]}/{league_name}"
+                    self.logger.info(f"Filtering matches for league: {league_pattern}")
+            
+            match_links = set()
+            
+            # Strategy 1: Use JavaScript to find match links with better filtering
+            try:
+                js_links = await page.evaluate("""
+                    (leaguePattern) => {
+                        const links = [];
+                        // Find all eventRow links
+                        document.querySelectorAll('div.eventRow a, tr.event a, div[class*="match"] a').forEach(a => {
+                            const href = a.href;
+                            // More strict filtering
+                            if (href && 
+                                href.includes('/football/') && 
+                                !href.includes('/pl/') &&  // Exclude Polish language URLs
+                                !href.includes('/results/') &&
+                                !href.includes('#/page/') &&
+                                !href.includes('/standings/') &&
+                                !href.includes('/outrights/') &&
+                                href.split('-').length >= 3) {  // Ensure it's a match URL
+                                
+                                // If we have a league pattern, ensure the link matches
+                                if (!leaguePattern || href.includes(leaguePattern)) {
+                                    // Further filter out non-match URLs
+                                    const lastPart = href.split('/').pop();
+                                    if (lastPart && lastPart.includes('-') && !lastPart.endsWith('/')) {
+                                        links.push(href);
+                                    }
+                                }
+                            }
+                        });
+                        return [...new Set(links)];
+                    }
+                """, league_pattern)
+                
+                if js_links:
+                    # Additional Python-side filtering
+                    filtered_links = []
+                    for link in js_links:
+                        # Exclude URLs from other leagues/competitions
+                        exclude_patterns = [
+                            '/saudi-arabia/', '/world/', '/south-america/', 
+                            '/copa-', '/euro-', '/champions-league/', '/europa-',
+                            '/conference-', '/nations-league/', '/world-cup/'
+                        ]
+                        if not any(pattern in link.lower() for pattern in exclude_patterns):
+                            # Ensure the URL contains the current league pattern
+                            if not league_pattern or league_pattern in link:
+                                filtered_links.append(link)
+                    
+                    match_links.update(filtered_links)
+                    self.logger.info(f"JavaScript found {len(filtered_links)} match links (filtered from {len(js_links)})")
+            except Exception as e:
+                self.logger.debug(f"JavaScript extraction failed: {e}")
+            
+            # Strategy 2: BeautifulSoup parsing with improved filtering
             html_content = await page.content()
             soup = BeautifulSoup(html_content, "lxml")
+            
+            # Try multiple selectors
             event_rows = soup.find_all(class_=re.compile("^eventRow"))
             self.logger.info(f"Found {len(event_rows)} event rows.")
 
-            match_links = {
-                f"{ODDSPORTAL_BASE_URL}{link['href']}"
-                for row in event_rows
-                for link in row.find_all("a", href=True)
-                if len(link["href"].strip("/").split("/")) > 3
-            }
+            for row in event_rows:
+                for link in row.find_all("a", href=True):
+                    href = link["href"]
+                    # Check if it's a valid match URL structure
+                    if (len(href.strip("/").split("/")) > 3 and 
+                        '/football/' in href and
+                        not '/pl/' in href and  # Exclude Polish URLs
+                        href.count('-') >= 2):  # Match URLs have multiple hyphens
+                        
+                        # Build full URL
+                        if href.startswith("http"):
+                            full_url = href
+                        else:
+                            full_url = f"{ODDSPORTAL_BASE_URL}{href}"
+                        
+                        # Apply league filter if available
+                        if not league_pattern or league_pattern in full_url:
+                            match_links.add(full_url)
 
             self.logger.info(f"Extracted {len(match_links)} unique match links.")
             return list(match_links)
@@ -142,7 +236,10 @@ class BaseScraper:
             List[Dict[str, Any]]: A list of dictionaries containing scraped odds data.
         """
         self.logger.info(f"Starting to scrape odds for {len(match_links)} match links...")
-        semaphore = asyncio.Semaphore(concurrent_scraping_task)
+        # Use instance concurrency_tasks instead of parameter
+        actual_concurrency = min(concurrent_scraping_task, self.concurrency_tasks)
+        self.logger.info(f"Using concurrency: {actual_concurrency}")
+        semaphore = asyncio.Semaphore(actual_concurrency)
         failed_links = []
 
         async def scrape_with_semaphore(link):
@@ -244,6 +341,9 @@ class BaseScraper:
                     self.logger.error(f"Error scraping markets for {match_link}: {market_error}")
                     # Continue without market data rather than failing completely
 
+            # Add match URL to the details
+            match_details['match_url'] = match_link
+            
             return match_details
 
         except Exception as e:

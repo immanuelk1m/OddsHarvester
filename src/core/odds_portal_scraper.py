@@ -1,3 +1,4 @@
+import logging
 import random
 from typing import Any
 
@@ -12,6 +13,10 @@ class OddsPortalScraper(BaseScraper):
     """
     Main class that manages the scraping workflow from OddsPortal.
     """
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.link_logger = logging.getLogger("LinkLogger")
 
     async def start_playwright(
         self,
@@ -49,6 +54,7 @@ class OddsPortalScraper(BaseScraper):
         scrape_odds_history: bool = False,
         target_bookmaker: str | None = None,
         max_pages: int | None = None,
+        max_matches: int | None = None,
     ) -> list[dict[str, Any]]:
         """
         Scrapes historical odds data.
@@ -61,6 +67,7 @@ class OddsPortalScraper(BaseScraper):
             scrape_odds_history (bool): Whether to scrape and attach odds history.
             target_bookmaker (str): If set, only scrape odds for this bookmaker.
             max_pages (Optional[int]): Maximum number of pages to scrape (default is None for all pages).
+            max_matches (Optional[int]): Maximum number of matches to scrape (default is None for all matches).
 
         Returns:
             List[Dict[str, Any]]: A list of dictionaries containing scraped historical match odds data.
@@ -85,7 +92,7 @@ class OddsPortalScraper(BaseScraper):
 
         # Collect match links from all pages
         self.logger.info("Step 2: Collecting match links from all pages...")
-        all_links = await self._collect_match_links(base_url=base_url, pages_to_scrape=pages_to_scrape)
+        all_links = await self._collect_match_links(base_url=base_url, pages_to_scrape=pages_to_scrape, max_matches=max_matches)
 
         # Extract odds from all collected links
         self.logger.info("Step 3: Extracting odds from collected match links...")
@@ -108,6 +115,7 @@ class OddsPortalScraper(BaseScraper):
         markets: list[str] | None = None,
         scrape_odds_history: bool = False,
         target_bookmaker: str | None = None,
+        max_matches: int | None = None,
     ) -> list[dict[str, Any]]:
         """
         Scrapes upcoming match odds.
@@ -119,6 +127,7 @@ class OddsPortalScraper(BaseScraper):
             markets (Optional[List[str]]): List of markets.
             scrape_odds_history (bool): Whether to scrape and attach odds history.
             target_bookmaker (str): If set, only scrape odds for this bookmaker.
+            max_matches (Optional[int]): Maximum number of matches to scrape.
 
         Returns:
             List[Dict[str, Any]]: A List of dictionaries containing upcoming match odds data.
@@ -148,6 +157,15 @@ class OddsPortalScraper(BaseScraper):
         if not match_links:
             self.logger.warning("No match links found for upcoming matches.")
             return []
+        
+        # Apply max_matches limit if specified
+        if max_matches and len(match_links) > max_matches:
+            self.logger.info(f"Limiting results to {max_matches} matches (from {len(match_links)} found)")
+            match_links = match_links[:max_matches]
+
+        self.logger.info(f"Logging {len(match_links)} collected match links.")
+        for link in match_links:
+            self.link_logger.info(link)
 
         return await self.extract_match_odds(
             sport=sport,
@@ -183,6 +201,10 @@ class OddsPortalScraper(BaseScraper):
         if not current_page:
             raise RuntimeError("Playwright has not been initialized. Call `start_playwright()` first.")
 
+        self.logger.info(f"Logging {len(match_links)} provided match links.")
+        for link in match_links:
+            self.link_logger.info(link)
+
         await current_page.goto(ODDSPORTAL_BASE_URL, timeout=20000, wait_until="domcontentloaded")
         await self._prepare_page_for_scraping(page=current_page)
         return await self.extract_match_odds(
@@ -191,7 +213,7 @@ class OddsPortalScraper(BaseScraper):
             markets=markets,
             scrape_odds_history=scrape_odds_history,
             target_bookmaker=target_bookmaker,
-            concurrent_scraping_task=len(match_links),
+            concurrent_scraping_task=min(len(match_links), self.concurrency_tasks),
             preview_submarkets_only=self.preview_submarkets_only,
         )
 
@@ -217,29 +239,102 @@ class OddsPortalScraper(BaseScraper):
             List[int]: List of pages to scrape.
         """
         self.logger.info("Analyzing pagination information...")
-
-        # Find all pagination links
-        pagination_links = await page.query_selector_all("a.pagination-link:not([rel='next'])")
-        self.logger.info(f"Found {len(pagination_links)} pagination links")
-
-        # Extract page numbers
-        total_pages = []
-        for link in pagination_links:
+        
+        # Wait for page to fully load
+        await page.wait_for_timeout(3000)
+        
+        # Try multiple selectors to find pagination
+        selectors = [
+            "div.pagination a",
+            "a[href*='#/page/']",
+            "div[class*='pagination'] a",
+            ".pagination-wrapper a",
+            "nav.pagination a",
+            "ul.pagination a",
+            "span.pagination-link",
+            "a.pagination-link",
+            "a.pagination-link:not([rel='next'])"
+        ]
+        
+        pagination_links = []
+        used_selector = None
+        
+        for selector in selectors:
             try:
-                text = await link.inner_text()
-                if text.isdigit():
-                    page_num = int(text)
-                    total_pages.append(page_num)
-                    self.logger.debug(f"Found pagination link: {page_num}")
+                links = await page.query_selector_all(selector)
+                if links:
+                    pagination_links = links
+                    used_selector = selector
+                    self.logger.info(f"Found {len(links)} pagination links using selector: {selector}")
+                    break
             except Exception as e:
-                self.logger.warning(f"Error processing pagination link: {e}")
+                self.logger.debug(f"Selector {selector} failed: {e}")
+                continue
+        
+        # Extract page numbers from links
+        total_pages = []
+        
+        if pagination_links:
+            for link in pagination_links:
+                try:
+                    # First try to get page number from href
+                    href = await link.get_attribute("href")
+                    if href and "#/page/" in href:
+                        # Extract page number from href like "#/page/14"
+                        page_num_str = href.split("#/page/")[-1].strip("/")
+                        if page_num_str.isdigit():
+                            page_num = int(page_num_str)
+                            total_pages.append(page_num)
+                            self.logger.debug(f"Found page {page_num} from href: {href}")
+                            continue
+                    
+                    # Then try to get page number from text
+                    text = await link.inner_text()
+                    text = text.strip()
+                    
+                    if text.isdigit():
+                        page_num = int(text)
+                        total_pages.append(page_num)
+                        self.logger.debug(f"Found pagination link: {page_num}")
+                    elif text.lower() in ["last", "»", ">>", "…", "next", "previous", "prev", "«", "<<"]:
+                        # Skip navigation buttons
+                        self.logger.debug(f"Skipping navigation button: {text}")
+                    else:
+                        # Try to extract number from text (e.g., "Page 1", "1.", etc.)
+                        import re
+                        numbers = re.findall(r'\d+', text)
+                        if numbers:
+                            page_num = int(numbers[0])
+                            total_pages.append(page_num)
+                            self.logger.debug(f"Extracted page number {page_num} from text: {text}")
+                except Exception as e:
+                    self.logger.warning(f"Error processing pagination link: {e}")
+        
+        # Also try JavaScript extraction for better detection
+        try:
+            js_pages = await page.evaluate("""
+                () => {
+                    const links = document.querySelectorAll('a[href*="#/page/"]');
+                    const pages = [];
+                    links.forEach(link => {
+                        const match = link.href.match(/#\\/page\\/(\\d+)/);
+                        if (match) pages.push(parseInt(match[1]));
+                    });
+                    return pages;
+                }
+            """)
+            if js_pages:
+                self.logger.info(f"JavaScript found additional pages: {js_pages}")
+                total_pages.extend(js_pages)
+        except Exception as e:
+            self.logger.debug(f"JavaScript pagination extraction failed: {e}")
 
         if not total_pages:
-            self.logger.info("No pagination found; scraping only the current page.")
+            self.logger.info("No page numbers extracted; scraping only the current page.")
             return [1]
 
         # Sort and log all available pages
-        total_pages = sorted(total_pages)
+        total_pages = sorted(set(total_pages))  # Remove duplicates
         self.logger.info(f"Raw pagination pages found: {total_pages}")
 
         # Check for gaps in pagination (e.g., [1,2,3,4,5,6,7,8,9,10,27] -> missing 11-26)
@@ -296,13 +391,14 @@ class OddsPortalScraper(BaseScraper):
             self.logger.info("No pagination gaps detected")
             return sorted_pages
 
-    async def _collect_match_links(self, base_url: str, pages_to_scrape: list[int]) -> list[str]:
+    async def _collect_match_links(self, base_url: str, pages_to_scrape: list[int], max_matches: int | None = None) -> list[str]:
         """
         Collects match links from multiple pages.
 
         Args:
             base_url (str): The base URL of the historic matches.
             pages_to_scrape (List[int]): Pages to scrape.
+            max_matches (Optional[int]): Maximum number of matches to collect.
 
         Returns:
             List[str]: List of match links found.
@@ -358,12 +454,24 @@ class OddsPortalScraper(BaseScraper):
                     self.logger.debug(f"Closed tab for page {page_number}")
 
         unique_links = list(set(all_links))
+        
+        # Apply max_matches limit if specified
+        if max_matches and len(unique_links) > max_matches:
+            self.logger.info(f"Limiting results to {max_matches} matches (from {len(unique_links)} found)")
+            unique_links = unique_links[:max_matches]
+        
         self.logger.info("Collection Summary:")
         self.logger.info(f"   • Total pages processed: {len(pages_to_scrape)}")
         self.logger.info(f"   • Successful pages: {successful_pages}")
         self.logger.info(f"   • Failed pages: {failed_pages}")
         self.logger.info(f"   • Total links found: {len(all_links)}")
         self.logger.info(f"   • Unique links: {len(unique_links)}")
+        if max_matches:
+            self.logger.info(f"   • Max matches limit: {max_matches}")
+
+        self.logger.info(f"Logging {len(unique_links)} unique match links.")
+        for link in unique_links:
+            self.link_logger.info(link)
 
         if failed_pages > 0:
             self.logger.warning(f"{failed_pages} pages failed during link collection")

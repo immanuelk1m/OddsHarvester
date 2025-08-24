@@ -4,6 +4,31 @@ import os
 
 DEFAULT_LOG_DIR = "logs"
 DEFAULT_LOG_FILE_NAME = "app.log"
+LINK_LOG_FILE_NAME = "match_links.log"
+
+
+def setup_link_logger(log_dir: str = DEFAULT_LOG_DIR):
+    """Sets up a dedicated logger for match links."""
+    link_logger = logging.getLogger("LinkLogger")
+    link_logger.setLevel(logging.INFO)
+
+    # Prevent link logs from propagating to the root logger
+    link_logger.propagate = False
+
+    links_log_dir = os.path.join(log_dir)
+    os.makedirs(links_log_dir, exist_ok=True)
+    log_file_path = os.path.join(links_log_dir, LINK_LOG_FILE_NAME)
+
+    # Use a simple formatter for links
+    formatter = logging.Formatter("%(message)s")
+
+    # Use a rotating file handler for the link logger
+    file_handler = RotatingFileHandler(log_file_path, maxBytes=1 * 1024 * 1024, backupCount=3)  # 1 MB
+    file_handler.setFormatter(formatter)
+
+    # Add handler only if not already present
+    if not link_logger.handlers:
+        link_logger.addHandler(file_handler)
 
 
 def setup_logger(
@@ -45,3 +70,7 @@ def setup_logger(
     else:
         logging.basicConfig(level=log_level, handlers=handlers)
         logging.info(f"Logging initialized. Log level: {logging.getLevelName(log_level)} (No file output)")
+
+    # Setup the dedicated logger for match links
+    setup_link_logger(log_dir=log_dir)
+    logging.info(f"Match links will be saved to {os.path.join(log_dir, LINK_LOG_FILE_NAME)}")

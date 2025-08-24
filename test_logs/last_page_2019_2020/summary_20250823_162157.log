@@ -1,0 +1,52 @@
+[2025-08-23 16:21:57] INFO: ================================================================================
+[2025-08-23 16:21:57] INFO: LAST PAGE COLLECTION TEST - 2019-2020 COMPLETE SEASONS
+[2025-08-23 16:21:57] INFO: Started at: 2025-08-23 16:21:57
+[2025-08-23 16:21:57] INFO: Testing 13 leagues (expecting 3+ pages each)
+[2025-08-23 16:21:57] INFO: ================================================================================
+[2025-08-23 16:21:57] INFO: Starting test: belgium - belgium-jupiler-pro-league - 2019-2020
+[2025-08-23 16:22:18] ERROR: FAILED: belgium - Should find matches on the last page
+assert 0 > 0
+[2025-08-23 16:22:18] INFO: Starting test: switzerland - switzerland-super-league - 2019-2020
+[2025-08-23 16:22:36] ERROR: FAILED: switzerland - Last page should be at least 3 (found: 1)
+assert 1 >= 3
+[2025-08-23 16:22:36] INFO: Starting test: england - england-premier-league - 2019-2020
+[2025-08-23 16:22:57] INFO: SUCCESS: england - Page 8 - 30 matches - 20.63s
+[2025-08-23 16:22:57] INFO: Starting test: italy - italy-serie-a - 2019-2020
+[2025-08-23 16:23:18] INFO: SUCCESS: italy - Page 8 - 30 matches - 20.67s
+[2025-08-23 16:23:18] INFO: Starting test: spain - spain-laliga - 2019-2020
+[2025-08-23 16:23:38] INFO: SUCCESS: spain - Page 8 - 30 matches - 20.54s
+[2025-08-23 16:23:38] INFO: Starting test: sweden - sweden-allsvenskan - 2019
+[2025-08-23 16:24:03] INFO: SUCCESS: sweden - Page 5 - 42 matches - 24.62s
+[2025-08-23 16:24:03] INFO: Starting test: france - france-ligue-1 - 2019-2020
+[2025-08-23 16:24:25] INFO: SUCCESS: france - Page 8 - 20 matches - 21.93s
+[2025-08-23 16:24:25] INFO: Starting test: portugal - portugal-liga-portugal - 2019-2020
+[2025-08-23 16:24:45] INFO: SUCCESS: portugal - Page 7 - 6 matches - 20.50s
+[2025-08-23 16:24:45] INFO: Starting test: norway - norway-eliteserien - 2019
+[2025-08-23 16:25:09] INFO: SUCCESS: norway - Page 5 - 42 matches - 23.46s
+[2025-08-23 16:25:09] INFO: Starting test: denmark - denmark-superliga - 2019-2020
+[2025-08-23 16:25:32] INFO: SUCCESS: denmark - Page 3 - 5 matches - 23.51s
+[2025-08-23 16:25:32] INFO: Starting test: germany - germany-bundesliga - 2019-2020
+[2025-08-23 16:25:54] INFO: SUCCESS: germany - Page 7 - 8 matches - 21.80s
+[2025-08-23 16:25:54] INFO: Starting test: netherlands - netherlands-eredivisie - 2019-2020
+[2025-08-23 16:26:16] INFO: SUCCESS: netherlands - Page 6 - 29 matches - 21.69s
+[2025-08-23 16:26:16] INFO: Starting test: scotland - scotland-premiership - 2019-2020
+[2025-08-23 16:26:40] INFO: SUCCESS: scotland - Page 4 - 35 matches - 23.74s
+[2025-08-23 16:26:40] INFO: ================================================================================
+[2025-08-23 16:26:40] INFO: TEST SESSION COMPLETED
+[2025-08-23 16:26:40] INFO: Total tests: 13
+[2025-08-23 16:26:40] INFO: Successful: 11
+[2025-08-23 16:26:40] INFO: Failed: 2
+[2025-08-23 16:26:40] INFO: Success rate: 84.6%
+[2025-08-23 16:26:40] INFO: Total matches collected: 277
+[2025-08-23 16:26:40] INFO: Total execution time: 282.01s
+[2025-08-23 16:26:40] INFO: Average time per test: 21.69s
+[2025-08-23 16:26:40] INFO: 
+Failed tests:
+[2025-08-23 16:26:40] INFO:   - belgium: Should find matches on the last page
+assert 0 > 0
+[2025-08-23 16:26:40] INFO:   - switzerland: Last page should be at least 3 (found: 1)
+assert 1 >= 3
+[2025-08-23 16:26:40] INFO: Ended at: 2025-08-23 16:26:40
+[2025-08-23 16:26:40] INFO: Results saved to: test_results/last_page_matches_2019_2020_20250823_162157.csv
+[2025-08-23 16:26:40] INFO: Logs directory: test_logs/last_page_2019_2020
+[2025-08-23 16:26:40] INFO: ================================================================================

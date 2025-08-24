@@ -29,6 +29,7 @@ class CLIArgumentHandler:
         return {
             "command": args.command,
             "match_links": getattr(args, "match_links", None),
+            "match_links_csv": getattr(args, "match_links_csv", None),
             "sport": getattr(args, "sport", None),
             "date": getattr(args, "date", None),
             "leagues": getattr(args, "leagues", None),
@@ -37,6 +38,7 @@ class CLIArgumentHandler:
             "storage_format": getattr(args, "format", None),
             "file_path": getattr(args, "file_path", None),
             "max_pages": getattr(args, "max_pages", None),
+            "max_matches": getattr(args, "max_matches", None),
             "proxies": getattr(args, "proxies", None),
             "headless": args.headless,
             "markets": args.markets,
@@ -46,4 +48,5 @@ class CLIArgumentHandler:
             "target_bookmaker": getattr(args, "target_bookmaker", None),
             "scrape_odds_history": getattr(args, "scrape_odds_history", False),
             "preview_submarkets_only": getattr(args, "preview_submarkets_only", False),
+            "concurrency_tasks": getattr(args, "concurrency_tasks", 3),
         }

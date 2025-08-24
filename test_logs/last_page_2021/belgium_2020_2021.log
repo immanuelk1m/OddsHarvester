@@ -1,0 +1,24 @@
+2025-08-23 16:01:01 - INFO - Starting test for belgium - belgium-jupiler-pro-league - 2020-2021
+2025-08-23 16:01:01 - DEBUG - Initializing scraper components...
+2025-08-23 16:01:01 - DEBUG - Starting Playwright browser...
+2025-08-23 16:01:02 - INFO - Base URL: https://www.oddsportal.com/football/belgium/jupiler-league-2020-2021/results/
+2025-08-23 16:01:02 - DEBUG - Navigating to results page...
+2025-08-23 16:01:07 - INFO - Page loaded in 5.00s
+2025-08-23 16:01:07 - DEBUG - Analyzing pagination...
+2025-08-23 16:01:07 - INFO - Found 1 total pages, last page is 1
+2025-08-23 16:01:07 - DEBUG - Pagination analysis took 0.02s
+2025-08-23 16:01:07 - INFO - Only one page found, already on last page
+2025-08-23 16:01:07 - DEBUG - Scrolling to load all content...
+2025-08-23 16:01:17 - DEBUG - Scrolling completed in 10.12s
+2025-08-23 16:01:17 - INFO - Extracting match URLs from last page...
+2025-08-23 16:01:17 - INFO - Found 6 matches on last page
+2025-08-23 16:01:17 - DEBUG - Extraction took 0.04s
+2025-08-23 16:01:17 - INFO - Sample match URLs:
+2025-08-23 16:01:17 - INFO -   1. https://www.oddsportal.com/pl/football/belgium/jupiler-league-2020-2021/antwerp-anderlecht-Iusx5MVa/
+2025-08-23 16:01:17 - INFO -   2. https://www.oddsportal.com/pl/football/belgium/jupiler-league-2020-2021/st-liege-oostende-G82icVTj/
+2025-08-23 16:01:17 - INFO -   3. https://www.oddsportal.com/pl/football/belgium/jupiler-league-2020-2021/
+2025-08-23 16:01:17 - INFO -   ... and 3 more matches
+2025-08-23 16:01:17 - INFO - ✅ Test completed successfully in 15.60s
+2025-08-23 16:01:17 - INFO - Summary: Last page=1, Matches=6
+2025-08-23 16:01:17 - DEBUG - Cleaning up Playwright resources...
+2025-08-23 16:01:17 - INFO - ============================================================

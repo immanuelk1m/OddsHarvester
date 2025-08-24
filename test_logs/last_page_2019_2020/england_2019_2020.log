@@ -1,0 +1,25 @@
+2025-08-23 16:41:28 - INFO - Starting test for england - england-premier-league - 2019-2020
+2025-08-23 16:41:28 - DEBUG - Initializing scraper components...
+2025-08-23 16:41:28 - DEBUG - Starting Playwright browser...
+2025-08-23 16:41:28 - INFO - Base URL: https://www.oddsportal.com/football/england/premier-league-2019-2020/results/
+2025-08-23 16:41:28 - DEBUG - Navigating to results page...
+2025-08-23 16:41:39 - INFO - Page loaded in 10.35s
+2025-08-23 16:41:39 - DEBUG - Analyzing pagination...
+2025-08-23 16:41:42 - INFO - Found 8 total pages, last page is 8
+2025-08-23 16:41:42 - DEBUG - Pagination analysis took 3.13s
+2025-08-23 16:41:42 - INFO - Navigating to last page: https://www.oddsportal.com/football/england/premier-league-2019-2020/results/#/page/8
+2025-08-23 16:41:48 - DEBUG - Last page loaded in 6.19s
+2025-08-23 16:41:48 - DEBUG - Scrolling to load all content...
+2025-08-23 16:41:54 - DEBUG - Scrolling completed in 6.12s
+2025-08-23 16:41:54 - INFO - Extracting match URLs from last page...
+2025-08-23 16:41:57 - INFO - Found 35 matches on last page
+2025-08-23 16:41:57 - DEBUG - Extraction took 3.08s
+2025-08-23 16:41:57 - INFO - Sample match URLs:
+2025-08-23 16:41:57 - INFO -   1. https://www.oddsportal.com/football/england/premier-league-2019-2020/bournemouth-sheffield-utd-OKxmKfYe/
+2025-08-23 16:41:57 - INFO -   2. https://www.oddsportal.com/football/england/premier-league-2019-2020/leicester-wolves-UHTxsIu9/
+2025-08-23 16:41:57 - INFO -   3. https://www.oddsportal.com/football/saudi-arabia/saudi-professional-league/
+2025-08-23 16:41:57 - INFO -   ... and 32 more matches
+2025-08-23 16:41:57 - INFO - ✅ Test completed successfully in 29.26s
+2025-08-23 16:41:57 - INFO - Summary: Last page=8, Matches=35
+2025-08-23 16:41:57 - DEBUG - Cleaning up Playwright resources...
+2025-08-23 16:41:57 - INFO - ============================================================

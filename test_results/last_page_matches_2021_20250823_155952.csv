@@ -1,0 +1,3 @@
+country,league_id,season,last_page_num,matches_on_last_page,test_duration_sec,status,error_message
+sweden,sweden-allsvenskan,2021,1,6,13.38,SUCCESS,
+norway,norway-eliteserien,2021,1,6,21.21,SUCCESS,

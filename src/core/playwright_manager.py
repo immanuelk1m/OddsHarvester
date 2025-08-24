@@ -42,11 +42,17 @@ class PlaywrightManager:
 
             self.browser = await self.playwright.chromium.launch(headless=headless, args=browser_args, proxy=proxy)
 
+            # Set English headers if no locale specified or for English locales
+            extra_headers = {}
+            if not locale or locale.startswith("en"):
+                extra_headers = {"Accept-Language": "en-US,en;q=0.9"}
+            
             self.context = await self.browser.new_context(
-                locale=locale,
-                timezone_id=timezone_id,
+                locale=locale if locale else "en-US",
+                timezone_id=timezone_id if timezone_id else "America/New_York",
                 user_agent=user_agent,
                 viewport={"width": random.randint(1366, 1920), "height": random.randint(768, 1080)},  # noqa: S311
+                extra_http_headers=extra_headers
             )
 
             self.page = await self.context.new_page()

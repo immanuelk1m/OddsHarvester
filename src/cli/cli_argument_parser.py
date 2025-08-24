@@ -37,6 +37,7 @@ class CLIArgumentParser:
         parser = subparsers.add_parser("scrape_upcoming", help="Scrape odds for upcoming matches.")
         self._add_common_arguments(parser)
         parser.add_argument("--date", type=str, help="📅 Date for upcoming matches (format: YYYYMMDD).")
+        parser.add_argument("--max_matches", type=int, help="🎯 Maximum number of matches to scrape (optional).")
 
     def _add_historic_parser(self, subparsers):
         parser = subparsers.add_parser(
@@ -46,10 +47,10 @@ class CLIArgumentParser:
         parser.add_argument(
             "--season",
             type=str,
-            required=True,
             help="📅 Season to scrape (format: YYYY, YYYY-YYYY, e.g., 2023 or 2022-2023).",
         )
         parser.add_argument("--max_pages", type=int, help="📑 Maximum number of pages to scrape (optional).")
+        parser.add_argument("--max_matches", type=int, help="🎯 Maximum number of matches to scrape (optional).")
 
     def _add_common_arguments(self, parser):
         parser.add_argument(
@@ -58,6 +59,17 @@ class CLIArgumentParser:
             type=str,
             default=None,
             help="🔗 Specific match links to scrape. Overrides sport, league, and date.",
+        )
+        parser.add_argument(
+            "--match_links_csv",
+            nargs="+",
+            type=str,
+            default=None,
+            help=(
+                "📄 One or more CSV file or directory paths to read match URLs from. "
+                "The CSV must contain a 'match_url' column. If a directory is provided, "
+                "all '*.csv' files under it (recursively) will be used."
+            ),
         )
         parser.add_argument(
             "--sport",

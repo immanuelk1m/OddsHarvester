@@ -1,0 +1,20 @@
+[2025-08-23 18:59:27] INFO: ================================================================================
+[2025-08-23 18:59:27] INFO: LAST PAGE COLLECTION TEST - 2019-2020 COMPLETE SEASONS
+[2025-08-23 18:59:27] INFO: Started at: 2025-08-23 18:59:27
+[2025-08-23 18:59:27] INFO: Testing 13 leagues (expecting 3+ pages each)
+[2025-08-23 18:59:27] INFO: ================================================================================
+[2025-08-23 18:59:27] INFO: Starting test: scotland - scotland-premiership - 2019-2020
+[2025-08-23 18:59:56] INFO: SUCCESS: scotland - Page 4 - 40 matches - 29.58s
+[2025-08-23 18:59:56] INFO: ================================================================================
+[2025-08-23 18:59:56] INFO: TEST SESSION COMPLETED
+[2025-08-23 18:59:56] INFO: Total tests: 1
+[2025-08-23 18:59:56] INFO: Successful: 1
+[2025-08-23 18:59:56] INFO: Failed: 0
+[2025-08-23 18:59:56] INFO: Success rate: 100.0%
+[2025-08-23 18:59:56] INFO: Total matches collected: 40
+[2025-08-23 18:59:56] INFO: Total execution time: 29.58s
+[2025-08-23 18:59:56] INFO: Average time per test: 29.58s
+[2025-08-23 18:59:56] INFO: Ended at: 2025-08-23 18:59:56
+[2025-08-23 18:59:56] INFO: Results saved to: test_results/last_page_matches_2019_2020_20250823_185927.csv
+[2025-08-23 18:59:56] INFO: Logs directory: test_logs/last_page_2019_2020
+[2025-08-23 18:59:56] INFO: ================================================================================

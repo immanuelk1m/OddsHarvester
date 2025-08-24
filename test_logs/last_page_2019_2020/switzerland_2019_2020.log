@@ -1,0 +1,25 @@
+2025-08-23 16:41:02 - INFO - Starting test for switzerland - switzerland-super-league - 2019-2020
+2025-08-23 16:41:02 - DEBUG - Initializing scraper components...
+2025-08-23 16:41:02 - DEBUG - Starting Playwright browser...
+2025-08-23 16:41:02 - INFO - Base URL: https://www.oddsportal.com/football/switzerland/super-league-2019-2020/results/
+2025-08-23 16:41:02 - DEBUG - Navigating to results page...
+2025-08-23 16:41:08 - INFO - Page loaded in 5.52s
+2025-08-23 16:41:08 - DEBUG - Analyzing pagination...
+2025-08-23 16:41:11 - INFO - Found 4 total pages, last page is 4
+2025-08-23 16:41:11 - DEBUG - Pagination analysis took 3.09s
+2025-08-23 16:41:11 - INFO - Navigating to last page: https://www.oddsportal.com/football/switzerland/super-league-2019-2020/results/#/page/4
+2025-08-23 16:41:16 - DEBUG - Last page loaded in 5.70s
+2025-08-23 16:41:16 - DEBUG - Scrolling to load all content...
+2025-08-23 16:41:25 - DEBUG - Scrolling completed in 8.15s
+2025-08-23 16:41:25 - INFO - Extracting match URLs from last page...
+2025-08-23 16:41:28 - INFO - Found 36 matches on last page
+2025-08-23 16:41:28 - DEBUG - Extraction took 3.08s
+2025-08-23 16:41:28 - INFO - Sample match URLs:
+2025-08-23 16:41:28 - INFO -   1. https://www.oddsportal.com/football/saudi-arabia/saudi-professional-league/
+2025-08-23 16:41:28 - INFO -   2. https://www.oddsportal.com/football/switzerland/super-league-2019-2020/young-boys-lugano-0K8JkoB2/
+2025-08-23 16:41:28 - INFO -   3. https://www.oddsportal.com/football/switzerland/super-league-2019-2020/
+2025-08-23 16:41:28 - INFO -   ... and 33 more matches
+2025-08-23 16:41:28 - INFO - ✅ Test completed successfully in 25.96s
+2025-08-23 16:41:28 - INFO - Summary: Last page=4, Matches=36
+2025-08-23 16:41:28 - DEBUG - Cleaning up Playwright resources...
+2025-08-23 16:41:28 - INFO - ============================================================

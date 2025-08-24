@@ -34,6 +34,48 @@ class URLBuilder:
         if not season:
             return f"{base_url}/results/"
 
+        # Handle special cases for leagues with different URL patterns based on season
+        if sport.lower() == "football":
+            # Belgium: jupiler-league before 2021-2022, jupiler-pro-league after
+            if "belgium" in league and season:
+                if re.match(r"^\d{4}-\d{4}$", season):
+                    start_year = int(season.split("-")[0])
+                    if start_year <= 2020:
+                        base_url = base_url.replace("jupiler-pro-league", "jupiler-league")
+                elif re.match(r"^\d{4}$", season):
+                    year = int(season)
+                    if year <= 2020:
+                        base_url = base_url.replace("jupiler-pro-league", "jupiler-league")
+            
+            # Portugal: primeira-liga before 2021-2022, liga-portugal after
+            elif "portugal" in league and season:
+                if re.match(r"^\d{4}-\d{4}$", season):
+                    start_year = int(season.split("-")[0])
+                    if start_year <= 2020:
+                        base_url = base_url.replace("liga-portugal", "primeira-liga")
+                elif re.match(r"^\d{4}$", season):
+                    year = int(season)
+                    if year <= 2020:
+                        base_url = base_url.replace("liga-portugal", "primeira-liga")
+            
+            # Sweden: special single-year format for 2022, 2023
+            elif "sweden" in league and season:
+                if re.match(r"^\d{4}$", season):
+                    year = int(season)
+                    if year in [2022, 2023]:
+                        # Use single year format for these specific years
+                        return f"{base_url}-{season}/results/"
+                # Otherwise continue with normal processing
+            
+            # Norway: special single-year format for 2019
+            elif "norway" in league and season:
+                if re.match(r"^\d{4}$", season):
+                    year = int(season)
+                    if year == 2019:
+                        # Use single year format for 2019
+                        return f"{base_url}-{season}/results/"
+                # Otherwise continue with normal processing
+
         if re.match(r"^\d{4}$", season):
             return f"{base_url}-{season}/results/"
 

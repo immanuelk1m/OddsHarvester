@@ -1,0 +1,71 @@
+2025-08-23 13:16:35,087 - ================================================================================
+2025-08-23 13:16:35,087 - STARTING ALL LEAGUES TEST
+2025-08-23 13:16:35,087 - Testing 13 leagues with 3 loops each = 39 total tests
+2025-08-23 13:16:35,087 - ================================================================================
+2025-08-23 13:16:35,087 - 
+--- LOOP 1 ---
+2025-08-23 13:16:35,087 - Testing belgium_jupiler-pro-league_loop1: jupiler-pro-league (2024-2025)
+2025-08-23 13:17:20,556 - ✅ SUCCESS: belgium_jupiler-pro-league_loop1 - 1 rows (Antwerp vs Charleroi)
+2025-08-23 13:17:22,558 - Testing switzerland_switzerland-super-league_loop1: switzerland-super-league (2024-2025)
+2025-08-23 13:19:47,609 - ✅ SUCCESS: switzerland_switzerland-super-league_loop1 - 1 rows (Basel vs Luzern)
+2025-08-23 13:19:49,611 - Testing england_england-premier-league_loop1: england-premier-league (2024-2025)
+2025-08-23 13:21:12,651 - ✅ SUCCESS: england_england-premier-league_loop1 - 1 rows (Liverpool vs Tottenham)
+2025-08-23 13:21:14,652 - Testing italy_italy-serie-a_loop1: italy-serie-a (2024-2025)
+2025-08-23 13:22:39,243 - ✅ SUCCESS: italy_italy-serie-a_loop1 - 1 rows (Lazio vs Lecce)
+2025-08-23 13:22:41,244 - Testing spain_spain-laliga_loop1: spain-laliga (2024-2025)
+2025-08-23 13:24:04,417 - ✅ SUCCESS: spain_spain-laliga_loop1 - 1 rows (Real Madrid vs Leganes)
+2025-08-23 13:24:06,418 - Testing sweden_sweden-allsvenskan_loop1: sweden-allsvenskan (2024)
+2025-08-23 13:25:27,158 - ✅ SUCCESS: sweden_sweden-allsvenskan_loop1 - 1 rows (Halmstad vs Djurgarden)
+2025-08-23 13:25:29,160 - Testing france_france-ligue-1_loop1: france-ligue-1 (2024-2025)
+2025-08-23 13:26:54,610 - ✅ SUCCESS: france_france-ligue-1_loop1 - 1 rows (Nice vs Reims)
+2025-08-23 13:26:56,611 - Testing portugal_liga-portugal_loop1: liga-portugal (2024-2025)
+2025-08-23 13:27:43,143 - ✅ SUCCESS: portugal_liga-portugal_loop1 - 1 rows (AFS vs Vizela)
+2025-08-23 13:27:45,144 - Testing norway_norway-eliteserien_loop1: norway-eliteserien (2024)
+2025-08-23 13:29:06,680 - ✅ SUCCESS: norway_norway-eliteserien_loop1 - 1 rows (Kristiansund vs Molde)
+2025-08-23 13:29:08,681 - Testing denmark_denmark-superliga_loop1: denmark-superliga (2024-2025)
+2025-08-23 13:30:27,445 - ✅ SUCCESS: denmark_denmark-superliga_loop1 - 1 rows (Sonderjyske vs Silkeborg)
+2025-08-23 13:30:29,446 - Testing germany_germany-bundesliga_loop1: germany-bundesliga (2024-2025)
+2025-08-23 13:31:50,358 - ✅ SUCCESS: germany_germany-bundesliga_loop1 - 1 rows (Dortmund vs Holstein Kiel)
+2025-08-23 13:31:52,360 - Testing netherlands_netherlands-eredivisie_loop1: netherlands-eredivisie (2024-2025)
+2025-08-23 13:31:52,732 - ❌ FAIL: netherlands_netherlands-eredivisie_loop1 - No data collected from scraper
+2025-08-23 13:31:54,733 - Testing scotland_scotland-premiership_loop1: scotland-premiership (2024-2025)
+2025-08-23 13:33:13,558 - ✅ SUCCESS: scotland_scotland-premiership_loop1 - 1 rows (Partick Thistle vs Ayr)
+2025-08-23 13:33:15,559 - 
+--- LOOP 2 ---
+2025-08-23 13:33:15,560 - Testing belgium_jupiler-pro-league_loop2: jupiler-pro-league (2024-2025)
+2025-08-23 13:34:06,376 - ✅ SUCCESS: belgium_jupiler-pro-league_loop2 - 1 rows (Antwerp vs Charleroi)
+2025-08-23 13:34:08,379 - Testing switzerland_switzerland-super-league_loop2: switzerland-super-league (2024-2025)
+2025-08-23 13:35:26,072 - ✅ SUCCESS: switzerland_switzerland-super-league_loop2 - 1 rows (St. Gallen vs Winterthur)
+2025-08-23 13:35:28,074 - Testing england_england-premier-league_loop2: england-premier-league (2024-2025)
+2025-08-23 13:36:47,270 - ✅ SUCCESS: england_england-premier-league_loop2 - 1 rows (Liverpool vs Tottenham)
+2025-08-23 13:36:49,272 - Testing italy_italy-serie-a_loop2: italy-serie-a (2024-2025)
+2025-08-23 13:38:04,554 - ✅ SUCCESS: italy_italy-serie-a_loop2 - 1 rows (Lazio vs Lecce)
+2025-08-23 13:38:06,557 - Testing spain_spain-laliga_loop2: spain-laliga (2024-2025)
+2025-08-23 13:39:25,270 - ✅ SUCCESS: spain_spain-laliga_loop2 - 1 rows (Real Madrid vs Celta Vigo)
+2025-08-23 13:39:27,271 - Testing sweden_sweden-allsvenskan_loop2: sweden-allsvenskan (2024)
+2025-08-23 13:40:44,098 - ✅ SUCCESS: sweden_sweden-allsvenskan_loop2 - 1 rows (Brommapojkarna vs Vasteras SK)
+2025-08-23 13:40:46,099 - Testing france_france-ligue-1_loop2: france-ligue-1 (2024-2025)
+2025-08-23 13:42:05,799 - ✅ SUCCESS: france_france-ligue-1_loop2 - 1 rows (Nice vs Reims)
+2025-08-23 13:42:07,800 - Testing portugal_liga-portugal_loop2: liga-portugal (2024-2025)
+2025-08-23 13:43:10,939 - ❌ FAIL: portugal_liga-portugal_loop2 - No data collected from scraper
+2025-08-23 13:43:12,940 - Testing norway_norway-eliteserien_loop2: norway-eliteserien (2024)
+2025-08-23 13:44:13,360 - ❌ FAIL: norway_norway-eliteserien_loop2 - No data collected from scraper
+2025-08-23 13:44:15,362 - Testing denmark_denmark-superliga_loop2: denmark-superliga (2024-2025)
+2025-08-23 13:45:15,778 - ❌ FAIL: denmark_denmark-superliga_loop2 - No data collected from scraper
+2025-08-23 13:45:17,781 - Testing germany_germany-bundesliga_loop2: germany-bundesliga (2024-2025)
+2025-08-23 13:46:18,197 - ❌ FAIL: germany_germany-bundesliga_loop2 - No data collected from scraper
+2025-08-23 13:46:20,199 - Testing netherlands_netherlands-eredivisie_loop2: netherlands-eredivisie (2024-2025)
+2025-08-23 13:46:20,573 - ❌ FAIL: netherlands_netherlands-eredivisie_loop2 - No data collected from scraper
+2025-08-23 13:46:22,575 - Testing scotland_scotland-premiership_loop2: scotland-premiership (2024-2025)
+2025-08-23 13:47:22,986 - ❌ FAIL: scotland_scotland-premiership_loop2 - No data collected from scraper
+2025-08-23 13:47:24,988 - 
+--- LOOP 3 ---
+2025-08-23 13:47:24,988 - Testing belgium_jupiler-pro-league_loop3: jupiler-pro-league (2024-2025)
+2025-08-23 13:48:25,406 - ❌ FAIL: belgium_jupiler-pro-league_loop3 - No data collected from scraper
+2025-08-23 13:48:27,408 - Testing switzerland_switzerland-super-league_loop3: switzerland-super-league (2024-2025)
+2025-08-23 13:49:27,825 - ❌ FAIL: switzerland_switzerland-super-league_loop3 - No data collected from scraper
+2025-08-23 13:49:29,827 - Testing england_england-premier-league_loop3: england-premier-league (2024-2025)
+2025-08-23 13:50:30,260 - ❌ FAIL: england_england-premier-league_loop3 - No data collected from scraper
+2025-08-23 13:50:32,262 - Testing italy_italy-serie-a_loop3: italy-serie-a (2024-2025)
+2025-08-23 13:53:06,975 - ❌ FAIL: italy_italy-serie-a_loop3 - No data collected from scraper
+2025-08-23 13:53:08,977 - Testing spain_spain-laliga_loop3: spain-laliga (2024-2025)

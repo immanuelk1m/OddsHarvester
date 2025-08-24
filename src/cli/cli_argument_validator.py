@@ -27,6 +27,12 @@ class CLIArgumentValidator:
         if hasattr(args, "match_links"):
             errors.extend(self._validate_match_links(match_links=args.match_links, sport=args.sport))
 
+        # Validate CSV/dir input for match links
+        if hasattr(args, "match_links_csv") and args.match_links_csv:
+            # When CSV is provided, sport is still required for routing/market registry
+            if not getattr(args, "sport", None):
+                errors.append("The '--sport' argument is required when using '--match_links_csv'.")
+
         if hasattr(args, "sport"):
             errors.extend(self._validate_sport(sport=args.sport))
 
@@ -44,7 +50,7 @@ class CLIArgumentValidator:
                 self._validate_date(
                     command=args.command,
                     date=args.date,
-                    match_links=args.match_links,
+                    match_links=(args.match_links or getattr(args, "match_links_csv", None)),
                     leagues=getattr(args, "leagues", None),
                 )
             )
@@ -178,8 +184,11 @@ class CLIArgumentValidator:
         if command != "scrape_historic":
             return errors  # Season validation is only for the historic command
 
+        # Season is required for historic only when not providing direct match links
+        # (via --match_links or --match_links_csv). It can be omitted when scraping direct URLs.
+        # This keeps CSV-based scraping simple.
+        # If season is omitted and no links are provided, the earlier validation will catch missing inputs.
         if not season:
-            errors.append("The season argument is required for the 'scrape_historic' command.")
             return errors
 
         single_year_pattern = re.compile(r"^\d{4}$")

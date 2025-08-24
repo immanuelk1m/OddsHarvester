@@ -34,12 +34,14 @@ TRANSIENT_ERRORS = (
 async def run_scraper(
     command: CommandEnum,
     match_links: list | None = None,
+    match_links_csv: list | None = None,
     sport: str | None = None,
     date: str | None = None,
     leagues: list[str] | None = None,
     season: str | None = None,
     markets: list | None = None,
     max_pages: int | None = None,
+    max_matches: int | None = None,
     proxies: list | None = None,
     browser_user_agent: str | None = None,
     browser_locale_timezone: str | None = None,
@@ -48,15 +50,16 @@ async def run_scraper(
     scrape_odds_history: bool = False,
     headless: bool = True,
     preview_submarkets_only: bool = False,
+    concurrency_tasks: int = 3,
 ) -> dict:
     """Runs the scraping process and handles execution."""
     logger.info(
         f"Starting scraper with parameters: command={command}, match_links={match_links}, "
-        f"sport={sport}, date={date}, leagues={leagues}, season={season}, markets={markets}, "
+        f"match_links_csv={match_links_csv}, sport={sport}, date={date}, leagues={leagues}, season={season}, markets={markets}, "
         f"max_pages={max_pages}, proxies={proxies}, browser_user_agent={browser_user_agent}, "
         f"browser_locale_timezone={browser_locale_timezone}, browser_timezone_id={browser_timezone_id}, "
         f"scrape_odds_history={scrape_odds_history}, target_bookmaker={target_bookmaker}, "
-        f"headless={headless}, preview_submarkets_only={preview_submarkets_only}"
+        f"headless={headless}, preview_submarkets_only={preview_submarkets_only}, concurrency_tasks={concurrency_tasks}"
     )
 
     proxy_manager = ProxyManager(cli_proxies=proxies)
@@ -70,6 +73,7 @@ async def run_scraper(
         browser_helper=browser_helper,
         market_extractor=market_extractor,
         preview_submarkets_only=preview_submarkets_only,
+        concurrency_tasks=concurrency_tasks,
     )
 
     try:
@@ -81,6 +85,15 @@ async def run_scraper(
             browser_timezone_id=browser_timezone_id,
             proxy=proxy_config,
         )
+
+        # Load match links from CSVs/directories if provided
+        if not match_links and match_links_csv:
+            loaded_links = await _load_match_links_from_csv_inputs(match_links_csv)
+            # Apply max_matches limit if specified
+            if loaded_links and max_matches:
+                logger.info(f"Limiting loaded links to {max_matches} (from {len(loaded_links)} found)")
+                loaded_links = loaded_links[:max_matches]
+            match_links = loaded_links or match_links
 
         if match_links and sport:
             logger.info(f"""
@@ -115,6 +128,7 @@ async def run_scraper(
                     scrape_odds_history=scrape_odds_history,
                     target_bookmaker=target_bookmaker,
                     max_pages=max_pages,
+                    max_matches=max_matches,
                 )
             else:
                 return await _scrape_multiple_leagues(
@@ -127,6 +141,7 @@ async def run_scraper(
                     scrape_odds_history=scrape_odds_history,
                     target_bookmaker=target_bookmaker,
                     max_pages=max_pages,
+                    max_matches=max_matches,
                 )
 
         elif command == CommandEnum.UPCOMING_MATCHES:
@@ -148,6 +163,7 @@ async def run_scraper(
                         markets=markets,
                         scrape_odds_history=scrape_odds_history,
                         target_bookmaker=target_bookmaker,
+                        max_matches=max_matches,
                     )
                 else:
                     return await _scrape_multiple_leagues(
@@ -159,6 +175,7 @@ async def run_scraper(
                         markets=markets,
                         scrape_odds_history=scrape_odds_history,
                         target_bookmaker=target_bookmaker,
+                        max_matches=max_matches,
                     )
             else:
                 logger.info(f"""
@@ -173,6 +190,7 @@ async def run_scraper(
                     markets=markets,
                     scrape_odds_history=scrape_odds_history,
                     target_bookmaker=target_bookmaker,
+                    max_matches=max_matches,
                 )
 
         else:
@@ -184,6 +202,52 @@ async def run_scraper(
 
     finally:
         await scraper.stop_playwright()
+
+
+async def _load_match_links_from_csv_inputs(paths: list[str]) -> list[str]:
+    """Collect and read CSV file(s) from mixed file/dir inputs and return match_url list.
+
+    - Accepts file paths to CSVs and/or directories. Directories are searched recursively for '*.csv'.
+    - Deduplicates and preserves natural order across files.
+    - Expects a 'match_url' column; rows missing it are skipped.
+    """
+    import csv
+    import os
+    loaded_files: list[str] = []
+
+    # Expand mixed inputs to a concrete list of CSV files
+    for p in paths:
+        if not p:
+            continue
+        abs_path = os.path.abspath(p)
+        if os.path.isdir(abs_path):
+            for root, _, files in os.walk(abs_path):
+                for name in files:
+                    if name.lower().endswith(".csv"):
+                        loaded_files.append(os.path.join(root, name))
+        elif os.path.isfile(abs_path) and abs_path.lower().endswith(".csv"):
+            loaded_files.append(abs_path)
+
+    # Read URLs
+    seen = set()
+    urls: list[str] = []
+    for file_path in sorted(set(loaded_files)):
+        try:
+            with open(file_path, newline="", encoding="utf-8") as f:
+                reader = csv.DictReader(f)
+                if "match_url" not in reader.fieldnames:
+                    logger.warning(f"CSV missing 'match_url' column: {file_path}")
+                    continue
+                for row in reader:
+                    url = (row.get("match_url") or "").strip()
+                    if url and url not in seen:
+                        seen.add(url)
+                        urls.append(url)
+            logger.info(f"Loaded {len(urls)} total URLs so far (last file: {file_path})")
+        except Exception as e:
+            logger.error(f"Failed to read CSV '{file_path}': {e}")
+
+    return urls
 
 
 async def _scrape_multiple_leagues(scraper, scrape_func, leagues: list[str], sport: str, **kwargs) -> list[dict]:
