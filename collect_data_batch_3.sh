@@ -23,7 +23,7 @@ for season in "2022-2023" "2023-2024" "2024-2025"; do
           --format csv \
           --file_path data/switzerland-super-league_${season_formatted}_$market_label.csv \
           --headless \
-          --concurrency_tasks 1
+          --concurrency_tasks 4
         
         if [ $? -eq 0 ]; then
             echo "$(date): [$COUNTER/$TOTAL] Switzerland $season 시즌 $market_label 마켓 완료 ✓"
@@ -47,7 +47,7 @@ for season in "2019-2020" "2020-2021" "2021-2022" "2022-2023" "2023-2024" "2024-
           --format csv \
           --file_path data/scotland-premiership_${season_formatted}_$market_label.csv \
           --headless \
-          --concurrency_tasks 1
+          --concurrency_tasks 4
         
         if [ $? -eq 0 ]; then
             echo "$(date): [$COUNTER/$TOTAL] Scotland $season 시즌 $market_label 마켓 완료 ✓"
@@ -71,7 +71,7 @@ for season in "2019-2020" "2020-2021" "2021-2022" "2022-2023" "2023-2024" "2024-
           --format csv \
           --file_path data/france-ligue-1_${season_formatted}_$market_label.csv \
           --headless \
-          --concurrency_tasks 1
+          --concurrency_tasks 4
         
         if [ $? -eq 0 ]; then
             echo "$(date): [$COUNTER/$TOTAL] France $season 시즌 $market_label 마켓 완료 ✓"
