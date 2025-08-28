@@ -27,8 +27,8 @@ logger = logging.getLogger("MatchURLCollector")
 SportMarketRegistrar.register_all_markets()
 
 # Output directories
-OUTPUT_DIR = Path("match_urls_collection")
-OUTPUT_DIR.mkdir(exist_ok=True)
+OUTPUT_DIR = Path("/Users/mac/Desktop/HIPO/oddsportal/oddssc/origin/OddsHarvester/match_urls_complete/by_league")
+OUTPUT_DIR.mkdir(exist_ok=True, parents=True)
 
 # Define leagues with their configurations
 LEAGUES_CONFIG = {
@@ -389,9 +389,46 @@ class MatchURLCollector:
 
 
 async def main():
-    """Main entry point"""
+    """Main entry point - collect only Belgium 2023-2024"""
     collector = MatchURLCollector()
-    await collector.collect_all_leagues()
+    
+    # Only collect Belgium 2023-2024
+    season = "2023-2024"
+    league_id = "belgium-jupiler-pro-league"
+    league_name = "Belgium Pro League"
+    
+    logger.info(f"Collecting {league_name} - {season}")
+    
+    # Create output directory for Belgium
+    belgium_dir = OUTPUT_DIR / "belgium"
+    belgium_dir.mkdir(exist_ok=True, parents=True)
+    
+    # Collect match URLs
+    match_urls = await collector.collect_match_urls(league_id, season)
+    
+    if match_urls:
+        # Save to CSV with same format as existing files
+        output_file = belgium_dir / f"{season}.csv"
+        
+        with open(output_file, 'w', newline='', encoding='utf-8') as f:
+            writer = csv.writer(f)
+            writer.writerow(['league', 'season', 'match_url'])
+            
+            for match in match_urls:
+                # Ensure URL ends with /
+                url = match["match_url"]
+                if not url.endswith('/'):
+                    url = url + '/'
+                writer.writerow([league_name, season, url])
+        
+        logger.info(f"✅ Saved {len(match_urls)} URLs to {output_file}")
+        print(f"\nCollection Complete!")
+        print(f"League: {league_name}")
+        print(f"Season: {season}")
+        print(f"Total matches: {len(match_urls)}")
+        print(f"Output file: {output_file}")
+    else:
+        logger.warning(f"No URLs collected for {league_name} - {season}")
 
 
 if __name__ == "__main__":

@@ -23,7 +23,7 @@ for season in "2019-2020" "2020-2021" "2021-2022" "2022-2023" "2024-2025"; do
           --format csv \
           --file_path data/belgium-jupiler-pro-league_${season_formatted}_$market_label.csv \
           --headless \
-          --concurrency_tasks 4
+          --concurrency_tasks 2
         
         if [ $? -eq 0 ]; then
             echo "$(date): [$COUNTER/$TOTAL] Belgium $season 시즌 $market_label 마켓 완료 ✓"
@@ -47,7 +47,7 @@ for season in "2020-2021" "2021-2022" "2022-2023" "2023-2024" "2024-2025"; do
           --format csv \
           --file_path data/portugal-liga-portugal_${season_formatted}_$market_label.csv \
           --headless \
-          --concurrency_tasks 4
+          --concurrency_tasks 2
         
         if [ $? -eq 0 ]; then
             echo "$(date): [$COUNTER/$TOTAL] Portugal $season 시즌 $market_label 마켓 완료 ✓"
@@ -71,7 +71,7 @@ for season in "2020-2021" "2021-2022" "2022-2023" "2023-2024" "2024-2025"; do
           --format csv \
           --file_path data/germany-bundesliga_${season_formatted}_$market_label.csv \
           --headless \
-          --concurrency_tasks 4
+          --concurrency_tasks 2
         
         if [ $? -eq 0 ]; then
             echo "$(date): [$COUNTER/$TOTAL] Germany $season 시즌 $market_label 마켓 완료 ✓"
@@ -88,3 +88,4 @@ echo "수집된 리그:"
 echo "- Belgium: 5개 시즌 × 3개 마켓 = 15개 파일"
 echo "- Portugal: 5개 시즌 × 3개 마켓 = 15개 파일"
 echo "- Germany: 5개 시즌 × 3개 마켓 = 15개 파일"
+

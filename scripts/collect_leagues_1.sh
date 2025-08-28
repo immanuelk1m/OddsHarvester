@@ -5,13 +5,13 @@
 
 echo "Starting Processor 1: Belgium, Switzerland, England"
 
-# Belgium (jupiler-pro-league)
+# Belgium (belgium-jupiler-pro-league)
 echo "Processing Belgium..."
 for season in "2018-2019" "2019-2020" "2020-2021" "2021-2022" "2022-2023" "2023-2024" "2024-2025"; do
     echo "Belgium season: $season"
     uv run python src/main.py scrape_historic \
         --sport football \
-        --leagues jupiler-pro-league \
+        --leagues belgium-jupiler-pro-league \
         --season "$season" \
         --markets over_under_2_5,over_under_3,over_under_3_5 \
         --storage local \
