@@ -245,37 +245,59 @@ class BaseScraper:
         async def scrape_with_semaphore(link):
             async with semaphore:
                 tab = None
+                max_retries = 2
+                retry_delay = 5
 
-                try:
-                    tab = await self.playwright_manager.context.new_page()
-                    data = await self._scrape_match_data(
-                        page=tab,
-                        sport=sport,
-                        match_link=link,
-                        markets=markets,
-                        scrape_odds_history=scrape_odds_history,
-                        target_bookmaker=target_bookmaker,
-                        preview_submarkets_only=preview_submarkets_only,
-                    )
-                    self.logger.info(f"Successfully scraped match link: {link}")
-                    return data
+                for attempt in range(max_retries + 1):
+                    try:
+                        tab = await self.playwright_manager.context.new_page()
+                        data = await self._scrape_match_data(
+                            page=tab,
+                            sport=sport,
+                            match_link=link,
+                            markets=markets,
+                            scrape_odds_history=scrape_odds_history,
+                            target_bookmaker=target_bookmaker,
+                            preview_submarkets_only=preview_submarkets_only,
+                        )
+                        if data:
+                            self.logger.info(f"Successfully scraped match link: {link} (attempt {attempt + 1})")
+                            return data
+                        elif attempt < max_retries:
+                            self.logger.warning(f"No data returned for {link}, retrying... (attempt {attempt + 1}/{max_retries + 1})")
+                            await asyncio.sleep(retry_delay)
+                        
+                    except Exception as e:
+                        if attempt < max_retries:
+                            self.logger.warning(f"Error scraping link {link}: {e}. Retrying... (attempt {attempt + 1}/{max_retries + 1})")
+                            await asyncio.sleep(retry_delay)
+                        else:
+                            self.logger.error(f"Failed to scrape link {link} after {max_retries + 1} attempts: {e}")
+                            failed_links.append(link)
+                            return None
 
-                except Exception as e:
-                    self.logger.error(f"Error scraping link {link}: {e}")
-                    failed_links.append(link)
-                    return None
-
-                finally:
-                    if tab:
-                        await tab.close()
+                    finally:
+                        if tab:
+                            await tab.close()
+                            tab = None
+                
+                # If we get here, all retries failed with no data
+                self.logger.error(f"Failed to get data for {link} after {max_retries + 1} attempts")
+                failed_links.append(link)
+                return None
 
         tasks = [scrape_with_semaphore(link) for link in match_links]
         results = await asyncio.gather(*tasks)
         odds_data = [result for result in results if result is not None]
-        self.logger.info(f"Successfully scraped odds data for {len(odds_data)} matches.")
+        
+        # Log success statistics
+        success_rate = (len(odds_data) / len(match_links) * 100) if match_links else 0
+        self.logger.info(f"Successfully scraped odds data for {len(odds_data)} matches out of {len(match_links)} ({success_rate:.1f}% success rate)")
 
         if failed_links:
-            self.logger.warning(f"Failed to scrape data for {len(failed_links)} links: {failed_links}")
+            self.logger.warning(f"Failed to scrape data for {len(failed_links)} links after retries: {failed_links}")
+            for link in failed_links:
+                self.logger.error(f"Permanently failed: {link}")
 
         return odds_data
 
@@ -308,10 +330,10 @@ class BaseScraper:
 
         try:
             # Navigate to the match page with extended timeout
-            await page.goto(match_link, timeout=15000, wait_until="domcontentloaded")
+            await page.goto(match_link, timeout=30000, wait_until="domcontentloaded")
 
             # Wait a bit for dynamic content to load
-            await page.wait_for_timeout(2000)
+            await page.wait_for_timeout(3000)
 
             match_details = await self._extract_match_details_event_header(page)
 

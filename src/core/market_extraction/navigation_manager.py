@@ -10,7 +10,7 @@ class NavigationManager:
 
     DEFAULT_TIMEOUT = 5000
     SCROLL_PAUSE_TIME = 2000
-    MARKET_SWITCH_WAIT_TIME = 3000
+    MARKET_SWITCH_WAIT_TIME = 5000
 
     def __init__(self, browser_helper: BrowserHelper):
         """Initialize NavigationManager."""
@@ -23,7 +23,7 @@ class NavigationManager:
             page=page, market_tab_name=market_tab_name, timeout=self.DEFAULT_TIMEOUT
         )
 
-    async def wait_for_market_switch(self, page: Page, market_name: str, max_attempts: int = 3) -> bool:
+    async def wait_for_market_switch(self, page: Page, market_name: str, max_attempts: int = 5) -> bool:
         """
         Wait for the market switch to complete and verify the correct market is active.
 
