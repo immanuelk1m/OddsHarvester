@@ -1,35 +1,63 @@
-# Stage 1: Base setup with dependencies
-FROM mcr.microsoft.com/playwright/python:v1.49.1-noble AS base
+FROM python:3.11-slim
 
-# Install uv globally
-COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    wget \
+    gnupg \
+    curl \
+    unzip \
+    xvfb \
+    libglib2.0-0 \
+    libnss3 \
+    libnspr4 \
+    libatk1.0-0 \
+    libatk-bridge2.0-0 \
+    libcups2 \
+    libdrm2 \
+    libdbus-1-3 \
+    libatspi2.0-0 \
+    libx11-6 \
+    libxcomposite1 \
+    libxdamage1 \
+    libxext6 \
+    libxfixes3 \
+    libxrandr2 \
+    libgbm1 \
+    libxcb1 \
+    libxkbcommon0 \
+    libpango-1.0-0 \
+    libcairo2 \
+    libasound2 \
+    && rm -rf /var/lib/apt/lists/*
 
-# Set environment variables
+# Set working directory
+WORKDIR /app
+
+# Install uv
+RUN pip install uv
+
+# Copy project files
+COPY pyproject.toml uv.lock ./
+COPY src ./src
+COPY match_urls_complete ./match_urls_complete
+COPY collect_*.sh ./
+
+# Install Python dependencies
+RUN uv sync
+
+# Install Playwright and Chromium
+RUN uv run playwright install chromium
+RUN uv run playwright install-deps chromium
+
+# Create data directory
+RUN mkdir -p data
+
+# Make all collect scripts executable
+RUN chmod +x collect_*.sh
+
+# Set environment variables for headless operation
+ENV DISPLAY=:99
 ENV PYTHONUNBUFFERED=1
-ENV LAMBDA_TASK_ROOT=/var/task
-WORKDIR "${LAMBDA_TASK_ROOT}"
 
-# Copy application files
-COPY src ${LAMBDA_TASK_ROOT}
-COPY pyproject.toml uv.lock README.md LICENSE.txt ${LAMBDA_TASK_ROOT}
-
-# Install dependencies
-RUN uv sync --frozen
-
-# Stage 2: AWS Lambda runtime
-FROM public.ecr.aws/lambda/python:3.12 AS aws-lambda
-
-# Copy all files from the base stage
-COPY --from=base /var/task /var/task
-
-# Set Lambda runtime handler
-CMD ["lambda_handler"]
-
-# Stage 3: Local development/testing
-FROM base AS local-dev
-
-# Activate the virtual environment
-ENV PATH="${LAMBDA_TASK_ROOT}/.venv/bin:$PATH"
-
-# Set default command for local testing
-CMD ["xvfb-run", "--", "python3", "-m", "main"]
+# Default command
+CMD ["/bin/bash"]

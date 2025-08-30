@@ -356,7 +356,26 @@ class BaseScraper:
                         preview_submarkets_only=preview_submarkets_only,
                     )
                     if market_data:
-                        match_details.update(market_data)
+                        # Validate market data for empty odds
+                        has_valid_data = False
+                        empty_markets = []
+                        
+                        for market_key, odds_list in market_data.items():
+                            if isinstance(odds_list, list) and len(odds_list) > 0:
+                                has_valid_data = True
+                            elif odds_list == [] or odds_list is None:
+                                empty_markets.append(market_key)
+                        
+                        if empty_markets:
+                            self.logger.warning(
+                                f"Empty odds detected in markets {empty_markets} for {match_link}. "
+                                f"These were already retried at market extraction level."
+                            )
+                        
+                        if has_valid_data:
+                            match_details.update(market_data)
+                        else:
+                            self.logger.warning(f"All market data was empty for {match_link}")
                     else:
                         self.logger.warning(f"No market data found for {match_link}")
                 except Exception as market_error:

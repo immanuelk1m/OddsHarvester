@@ -42,6 +42,14 @@ class OddsPortalMarketExtractor:
         self.submarket_extractor = SubmarketExtractor()
         self.odds_history_extractor = OddsHistoryExtractor()
         self.market_grouping = MarketGrouping()
+        
+        # Statistics for retry tracking
+        self.retry_stats = {
+            "total_attempts": 0,
+            "retry_attempts": 0,
+            "successful_retries": 0,
+            "failed_after_retries": 0
+        }
 
     async def scrape_markets(
         self,
@@ -167,27 +175,48 @@ class OddsPortalMarketExtractor:
             f"Scraping odds for market: {main_market}, specific: {specific_market}, period: {period}, "
             f"preview_mode: {preview_submarkets_only}"
         )
+        
+        # Retry logic for empty odds
+        max_empty_odds_retries = 2
+        
+        for retry_attempt in range(max_empty_odds_retries + 1):
+            try:
+                # Navigate to the main market tab
+                if not await self.navigation_manager.navigate_to_market_tab(page=page, market_tab_name=main_market):
+                    self.logger.error(f"Failed to find or click {main_market} tab")
+                    return []
 
-        try:
-            # Navigate to the main market tab
-            if not await self.navigation_manager.navigate_to_market_tab(page=page, market_tab_name=main_market):
-                self.logger.error(f"Failed to find or click {main_market} tab")
-                return []
+                # Wait for market switch to complete
+                await self.navigation_manager.wait_for_market_switch(page, main_market)
 
-            # Wait for market switch to complete
-            await self.navigation_manager.wait_for_market_switch(page, main_market)
+                # Handle different scraping modes
+                if preview_submarkets_only:
+                    # For preview mode, always try passive extraction first
+                    self.logger.info(f"Using passive mode for {main_market} in preview mode")
+                    odds_data = await self.submarket_extractor.extract_visible_submarkets_passive(
+                        page=page, main_market=main_market, period=period, odds_labels=odds_labels
+                    )
 
-            # Handle different scraping modes
-            if preview_submarkets_only:
-                # For preview mode, always try passive extraction first
-                self.logger.info(f"Using passive mode for {main_market} in preview mode")
-                odds_data = await self.submarket_extractor.extract_visible_submarkets_passive(
-                    page=page, main_market=main_market, period=period, odds_labels=odds_labels
-                )
+                    # If no data was extracted passively, fall back to normal scraping
+                    if not odds_data:
+                        self.logger.info(f"No data extracted passively for {main_market}, falling back to normal scraping")
+                        if specific_market and not await self.navigation_manager.select_specific_market(
+                            page=page, specific_market=specific_market
+                        ):
+                            self.logger.error(f"Failed to find or select {specific_market} within {main_market}")
+                            return []
 
-                # If no data was extracted passively, fall back to normal scraping
-                if not odds_data:
-                    self.logger.info(f"No data extracted passively for {main_market}, falling back to normal scraping")
+                        await self.navigation_manager.wait_for_page_load(page)
+                        html_content = await page.content()
+
+                        odds_data = self.odds_parser.parse_market_odds(
+                            html_content=html_content,
+                            period=period,
+                            odds_labels=odds_labels,
+                            target_bookmaker=target_bookmaker,
+                        )
+                else:
+                    # Active mode: click on specific submarket if provided
                     if specific_market and not await self.navigation_manager.select_specific_market(
                         page=page, specific_market=specific_market
                     ):
@@ -198,52 +227,84 @@ class OddsPortalMarketExtractor:
                     html_content = await page.content()
 
                     odds_data = self.odds_parser.parse_market_odds(
-                        html_content=html_content,
-                        period=period,
-                        odds_labels=odds_labels,
-                        target_bookmaker=target_bookmaker,
+                        html_content=html_content, period=period, odds_labels=odds_labels, target_bookmaker=target_bookmaker
                     )
-            else:
-                # Active mode: click on specific submarket if provided
-                if specific_market and not await self.navigation_manager.select_specific_market(
-                    page=page, specific_market=specific_market
-                ):
-                    self.logger.error(f"Failed to find or select {specific_market} within {main_market}")
-                    return []
-
-                await self.navigation_manager.wait_for_page_load(page)
-                html_content = await page.content()
-
-                odds_data = self.odds_parser.parse_market_odds(
-                    html_content=html_content, period=period, odds_labels=odds_labels, target_bookmaker=target_bookmaker
-                )
-
-            if scrape_odds_history:
-                self.logger.info("Fetching odds history for all parsed bookmakers.")
-
-                for odds_entry in odds_data:
-                    bookmaker_name = odds_entry.get("bookmaker_name")
-
-                    if not bookmaker_name or (target_bookmaker and bookmaker_name.lower() != target_bookmaker.lower()):
+                
+                # Check for empty odds and retry if necessary
+                if not odds_data or odds_data == []:
+                    self.retry_stats["total_attempts"] += 1
+                    if retry_attempt < max_empty_odds_retries:
+                        self.retry_stats["retry_attempts"] += 1
+                        wait_time = 2000 * (retry_attempt + 1)  # Exponential backoff: 2s, 4s
+                        self.logger.warning(
+                            f"Empty odds detected for {main_market}/{specific_market}, "
+                            f"retrying... (attempt {retry_attempt + 2}/{max_empty_odds_retries + 1})"
+                        )
+                        # Reload the page to refresh data
+                        await page.reload(wait_until="domcontentloaded")
+                        await page.wait_for_timeout(wait_time)
                         continue
+                    else:
+                        self.retry_stats["failed_after_retries"] += 1
+                        self.logger.error(
+                            f"Empty odds persisted for {main_market}/{specific_market} "
+                            f"after {max_empty_odds_retries + 1} attempts. "
+                            f"Stats - Total empty: {self.retry_stats['total_attempts']}, "
+                            f"Retries: {self.retry_stats['retry_attempts']}, "
+                            f"Success: {self.retry_stats['successful_retries']}, "
+                            f"Failed: {self.retry_stats['failed_after_retries']}"
+                        )
+                        return []
 
-                    modals = await self.odds_history_extractor.extract_odds_history_for_bookmaker(page, bookmaker_name)
+                if scrape_odds_history:
+                    self.logger.info("Fetching odds history for all parsed bookmakers.")
 
-                    if modals:
-                        all_histories = []
-                        for modal_html in modals:
-                            parsed_history = self.odds_parser.parse_odds_history_modal(modal_html)
-                            if parsed_history:
-                                all_histories.append(parsed_history)
+                    for odds_entry in odds_data:
+                        bookmaker_name = odds_entry.get("bookmaker_name")
 
-                        odds_entry["odds_history_data"] = all_histories
+                        if not bookmaker_name or (target_bookmaker and bookmaker_name.lower() != target_bookmaker.lower()):
+                            continue
 
-            # Close the sub-market after scraping to avoid duplicates
-            if specific_market:
-                await self.navigation_manager.close_specific_market(page, specific_market)
+                        modals = await self.odds_history_extractor.extract_odds_history_for_bookmaker(page, bookmaker_name)
 
-            return odds_data
+                        if modals:
+                            all_histories = []
+                            for modal_html in modals:
+                                parsed_history = self.odds_parser.parse_odds_history_modal(modal_html)
+                                if parsed_history:
+                                    all_histories.append(parsed_history)
 
-        except Exception as e:
-            self.logger.error(f"Error extracting odds for {main_market} {specific_market}: {e}")
-            return []
+                            odds_entry["odds_history_data"] = all_histories
+
+                # Close the sub-market after scraping to avoid duplicates
+                if specific_market:
+                    await self.navigation_manager.close_specific_market(page, specific_market)
+                
+                # Successfully got non-empty odds
+                if retry_attempt > 0:
+                    self.retry_stats["successful_retries"] += 1
+                    self.logger.info(
+                        f"Successfully retrieved odds for {main_market}/{specific_market} after {retry_attempt + 1} attempts. "
+                        f"Stats - Total empty: {self.retry_stats['total_attempts']}, "
+                        f"Retries: {self.retry_stats['retry_attempts']}, "
+                        f"Success: {self.retry_stats['successful_retries']}, "
+                        f"Failed: {self.retry_stats['failed_after_retries']}"
+                    )
+                
+                return odds_data
+
+            except Exception as e:
+                if retry_attempt < max_empty_odds_retries:
+                    wait_time = 2000 * (retry_attempt + 1)
+                    self.logger.warning(
+                        f"Error extracting odds for {main_market}/{specific_market}: {e}. "
+                        f"Retrying... (attempt {retry_attempt + 2}/{max_empty_odds_retries + 1})"
+                    )
+                    await page.wait_for_timeout(wait_time)
+                    continue
+                else:
+                    self.logger.error(f"Error extracting odds for {main_market}/{specific_market} after all retries: {e}")
+                    return []
+        
+        # Should not reach here, but return empty list as fallback
+        return []

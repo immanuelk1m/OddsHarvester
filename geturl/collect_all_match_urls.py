@@ -89,7 +89,7 @@ LEAGUE_CONFIGS = {
             "2024-2025": "https://www.oddsportal.com/football/portugal/liga-portugal-2024-2025/results/"
         }
     },
-    "norway": {
+    "norway": { 
         "name": "Norway Eliteserien",
         "seasons": {
             "2020": "https://www.oddsportal.com/football/norway/eliteserien-2020/results/",
@@ -119,7 +119,7 @@ LEAGUE_CONFIGS = {
             "2024-2025": "https://www.oddsportal.com/football/germany/bundesliga-2024-2025/results/"
         }
     },
-    "netherlands": {
+    "netherlands": {  <- 해야됨
         "name": "Netherlands Eredivisie",
         "seasons": {
             "2020-2021": "https://www.oddsportal.com/football/netherlands/eredivisie-2020-2021/results/",
