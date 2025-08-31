@@ -15,11 +15,23 @@ PLAYWRIGHT_BROWSER_ARGS = [
 ]
 
 PLAYWRIGHT_BROWSER_ARGS_DOCKER = [
-    "--disable-dev-shm-usage",
     "--no-sandbox",
-    "--headless",  # Ensure headless mode
+    "--disable-setuid-sandbox",
+    "--disable-dev-shm-usage",
+    "--disable-accelerated-2d-canvas",
+    "--no-first-run",
+    "--no-zygote",
+    "--single-process",
     "--disable-gpu",
+    "--disable-features=IsolateOrigins,site-per-process",
+    "--disable-web-security",
+    "--disable-blink-features=AutomationControlled",
+    "--window-size=1920,1080",
+    "--start-maximized",
     "--disable-background-networking",
     "--disable-popup-blocking",
     "--disable-extensions",
+    "--disable-background-timer-throttling",
+    "--disable-backgrounding-occluded-windows",
+    "--disable-renderer-backgrounding",
 ]

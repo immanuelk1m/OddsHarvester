@@ -1,0 +1,13 @@
+steps:
+  # Docker 이미지 빌드 (linux/amd64 플랫폼 명시)
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '--platform', 'linux/amd64', '-t', 'gcr.io/$PROJECT_ID/odds-harvester:latest', '-t', 'gcr.io/$PROJECT_ID/odds-harvester:amd64', '.']
+    timeout: '1200s'
+    
+# 빌드된 이미지를 GCR에 푸시
+images:
+  - 'gcr.io/$PROJECT_ID/odds-harvester:latest'
+  - 'gcr.io/$PROJECT_ID/odds-harvester:amd64'
+
+options:
+  machineType: 'E2_HIGHCPU_8'

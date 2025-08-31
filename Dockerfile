@@ -28,6 +28,14 @@ RUN apt-get update && apt-get install -y \
     libpango-1.0-0 \
     libcairo2 \
     libasound2 \
+    fonts-liberation \
+    fonts-unifont \
+    libgtk-3-0 \
+    libnotify4 \
+    libxss1 \
+    libxtst6 \
+    xdg-utils \
+    libvulkan1 \
     && rm -rf /var/lib/apt/lists/*
 
 # Set working directory
@@ -47,10 +55,10 @@ RUN uv sync
 
 # Install Playwright and Chromium
 RUN uv run playwright install chromium
-RUN uv run playwright install-deps chromium
+# Skip install-deps as we already installed all required dependencies manually
 
-# Create data directory
-RUN mkdir -p data
+# Create data directory and GCS mount point
+RUN mkdir -p data /mnt/gcs-data
 
 # Make all collect scripts executable
 RUN chmod +x collect_*.sh
@@ -58,6 +66,7 @@ RUN chmod +x collect_*.sh
 # Set environment variables for headless operation
 ENV DISPLAY=:99
 ENV PYTHONUNBUFFERED=1
+ENV TZ=Asia/Seoul
 
 # Default command
 CMD ["/bin/bash"]

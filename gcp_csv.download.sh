@@ -2,6 +2,7 @@
 
 # Final working GCP download script
 # Downloads all CSV files from GCP instances to local gcp/ directory
+# Updated to download from /opt/odds-harvester for odds-collector-1 to 7
 
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
@@ -39,8 +40,8 @@ download_instance() {
             rm -rf ~/csv_temp 2>/dev/null
             mkdir -p ~/csv_temp
             
-            # Find and copy each CSV file individually
-            sudo find /home/letsgopolands/OddsHarvester/data -name '*.csv' -type f | while read f; do
+            # Find and copy each CSV file individually from /opt/odds-harvester
+            sudo find /opt/odds-harvester -name '*.csv' -type f | while read f; do
                 sudo cp \"\$f\" ~/csv_temp/
             done
             
@@ -100,7 +101,7 @@ download_instance() {
 echo "Downloading from all instances..."
 echo ""
 
-for i in {1..5}; do
+for i in {1..7}; do
     download_instance $i &
 done
 
@@ -119,7 +120,7 @@ echo "=========================================="
 total_files=0
 successful_instances=0
 
-for i in {1..5}; do
+for i in {1..7}; do
     dir="gcp/odds-collector-${i}/data"
     if [ -d "${dir}" ]; then
         count=$(find "${dir}" -name "*.csv" -type f 2>/dev/null | wc -l)
@@ -145,7 +146,7 @@ done
 echo ""
 if [ $total_files -gt 0 ]; then
     total_size=$(du -sh gcp 2>/dev/null | cut -f1)
-    echo -e "Results: ${GREEN}${successful_instances}/5 instances${NC}"
+    echo -e "Results: ${GREEN}${successful_instances}/7 instances${NC}"
     echo -e "Total files: ${GREEN}${total_files}${NC}"
     echo -e "Total size: ${GREEN}${total_size}${NC}"
     echo -e "Time: ${duration} seconds"
