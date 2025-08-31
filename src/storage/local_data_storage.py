@@ -70,8 +70,16 @@ class LocalDataStorage:
     def _save_as_csv(self, data: list[dict], file_path: str):
         """Save data in CSV format."""
         try:
+            # Collect all unique fieldnames from all records
+            all_fieldnames = set()
+            for record in data:
+                all_fieldnames.update(record.keys())
+            
+            # Sort fieldnames for consistent column order
+            fieldnames = sorted(all_fieldnames)
+            
             with open(file_path, mode="a", newline="", encoding="utf-8") as file:
-                writer = csv.DictWriter(file, fieldnames=data[0].keys())
+                writer = csv.DictWriter(file, fieldnames=fieldnames, extrasaction='ignore')
 
                 # Write header only if the file is newly created
                 if os.path.getsize(file_path) == 0:

@@ -22,7 +22,7 @@ for season in "2020-2021" "2021-2022" "2022-2023" "2023-2024" "2024-2025"; do
           --format csv \
           --file_path data/scotland-premiership_${season_formatted}_$market_label.csv \
           --headless \
-          --concurrency_tasks 2
+          --concurrency_tasks 4
         
         if [ $? -eq 0 ]; then
             echo "$(date): [$COUNTER/$TOTAL] Scotland $season 시즌 $market_label 마켓 완료 ✓"
